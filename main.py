@@ -1,5 +1,6 @@
 from itertools import product
 from typing import Generator
+
 import numpy as np
 
 from display import display_possible
@@ -23,6 +24,11 @@ SHOTS_MADE = {
    8:  [(12, 6 ), (10, 6 ), (20, 6 ), (10, 10), (4 , 6 )],
    9:  [(13, 3 ), (13, 12), (13, 4 ), (17, 3 ), (3 , 9 )],
    10: [(9 , 12), (10, 12), (11, 12), (5 , 20), (7 , 20)],
+   11: [(18, 5 ), (14, 5 ), (2 , 5 ), (6 , 5 ), (7 , 5 )],
+   12: [(4,  20), (20, 20), (12, 20), (14, 20), (16, 20)],
+   13: [(4, 10), (7, 10), (11, 10), (9, 10), (10, 10)],
+   14: [],
+   15: [(2, 19), (6, 19), (14, 19), (18, 19), (10, 19)]
 }
 
 def all_possible():
@@ -68,6 +74,10 @@ for x0, y0, dx, dy in all_possible():
     if 128 % dx == 0:
         continue
 
+    # Day 11 clue
+    if dx not in (7, 8, 9):
+        continue
+
     for day, x, y in positions_each_day(x0, y0, dx, dy):
         if was_shot_at(day, x, y):
             # Ignore where shot down
@@ -98,12 +108,16 @@ for x0, y0, dx, dy in all_possible():
     if dy in (3, 1, 5):
         continue
 
+    # Day 7 clue
+    if dy in (4, 7, 6):
+        continue
+
     # Day 8 clue
     if 840 % dy != 0:
         continue
 
-    # Day 7 clue
-    if dy in (4, 7, 6):
+    # Day 15 clue
+    if dy % 2 == 0:
         continue
 
     for day, x, y in positions_each_day(x0, y0, dx, dy):
@@ -114,7 +128,16 @@ for x0, y0, dx, dy in all_possible():
         # This isn't necessarily true, I only know it's true for one of blue and orange
         # so I'll just add an extra couple hits here to reflect that.
         if day == 8 and y == 20:
-            hits = 5
+            hits += 2
+
+        # Day 13 clue
+        # I know red is not at position on this day, so must be blue and orange
+        if day == 6 and y != 4:
+            break
+
+        # Day 14
+        if day == 4 and y != 14:
+            break
     else:
         for day, x, y in positions_each_day(x0, y0, dx, dy):
             blue_possible[day-1, x-1, y-1] += hits
@@ -124,6 +147,11 @@ print("Simulating orange drone...")
 orange_possible = np.zeros((25, 20, 20))
 for x0, y0, dx, dy in all_possible():
     hits = 1
+
+    # Day 12 clue
+    if dx not in (1, 4, 3):
+        continue
+
     for day, x, y in positions_each_day(x0, y0, dx, dy):
         if was_shot_at(day, x, y):
             break
@@ -136,11 +164,16 @@ for x0, y0, dx, dy in all_possible():
         # This isn't necessarily true, I only know it's true for one of blue and orange
         # so I'll just add an extra couple hits here to reflect that.
         if day == 8 and y == 20:
-            hits = 5
+            hits += 2
+
+        # Day 13 clue
+        # I know red is not at position on this day, so must be blue and orange
+        if day == 6 and y != 4:
+            break
     else:
         for day, x, y in positions_each_day(x0, y0, dx, dy):
             orange_possible[day-1, x-1, y-1] += hits
 assert all(day_sum >= 1 for day_sum in orange_possible.sum(axis=(1, 2)))
 
 print("Displaying results!")
-display_possible(blue_possible, orange_possible, days=range(8,26))
+display_possible(blue_possible, orange_possible, days=range(15,26))

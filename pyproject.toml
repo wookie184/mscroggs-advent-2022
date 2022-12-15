@@ -1,0 +1,56 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "mscroggs-advent-2022"
+version = "0.0.10"
+description = ''
+readme = "README.md"
+requires-python = ">=3.7"
+license = "MIT"
+keywords = []
+authors = [
+  { name = "wookie184", email = "wookie1840@gmail.com" },
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.7",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
+]
+
+[project.urls]
+Documentation = "https://github.com/wookie184/mscroggs-advent-2022#readme"
+Issues = "https://github.com/wookie184/mscroggs-advent-2022/issues"
+Source = "https://github.com/wookie184/mscroggs-advent-2022"
+
+[tool.ruff]
+extend-select = [
+  # Pylint
+  "PLC", "PLE", "PLR", "PLW",
+
+  # Isort
+  "I",
+
+  # Docstrings
+  "D2", "D3", "D4",
+
+  # Pyupgrade and ruff
+  "UP", "RUF"
+]
+ignore = ["B008"]
+
+[tool.hatch.envs.dev]
+detached=true
+dependencies = [
+  "black",
+  "ruff",
+]
+
+
