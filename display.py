@@ -13,13 +13,15 @@ def largest_indices(ary: np.ndarray, n: int):
     return zip(*np.unravel_index(indices, ary.shape), strict=True)
 
 
-def display_possible(*drones_days_counts: np.ndarray, days: Iterable[int]=range(1,26)):
+def display_possible(
+    *drones_days_counts: np.ndarray, days: Iterable[int] = range(1, 26)
+):
     for day in days:
         # Combine and normalize the counts in that day to percentages
         data = np.ones((20, 20))
         for drone_days_counts in drones_days_counts:
-            drone_day_counts = np.swapaxes(drone_days_counts[day-1], 0, 1)
-            drone_day_probabilities = (drone_day_counts / drone_day_counts.sum())
+            drone_day_counts = np.swapaxes(drone_days_counts[day - 1], 0, 1)
+            drone_day_probabilities = drone_day_counts / drone_day_counts.sum()
             data *= 1 - drone_day_probabilities
 
         data = 1 - data
@@ -53,6 +55,6 @@ def display_possible(*drones_days_counts: np.ndarray, days: Iterable[int]=range(
 
         fig.colorbar(im, ax=ax, label="Probability of hit (%)")
         ax.set_title(f"Day {day}")
-        
+
         fig.tight_layout()
         plt.show()

@@ -17,22 +17,26 @@ from display import display_possible
 # Day 9  - 532
 # Day 10 - 800
 
+# fmt: off
 SHOTS_MADE = {
-   5:  [(3 , 7 ), (12, 12), (2 , 12), (13, 13), (3 , 12)],
-   6:  [(5 , 5 ), (5 , 9 ), (5 , 14), (5 , 15), (5 , 16)],
-   7:  [(20, 1 ), (20, 3 ), (20, 19), (1 , 17), (8 , 5 )],
-   8:  [(12, 6 ), (10, 6 ), (20, 6 ), (10, 10), (4 , 6 )],
-   9:  [(13, 3 ), (13, 12), (13, 4 ), (17, 3 ), (3 , 9 )],
-   10: [(9 , 12), (10, 12), (11, 12), (5 , 20), (7 , 20)],
-   11: [(18, 5 ), (14, 5 ), (2 , 5 ), (6 , 5 ), (7 , 5 )],
-   12: [(4,  20), (20, 20), (12, 20), (14, 20), (16, 20)],
-   13: [(4, 10), (7, 10), (11, 10), (9, 10), (10, 10)],
-   14: [],
-   15: [(2, 19), (6, 19), (14, 19), (18, 19), (10, 19)]
+    5:  [(3 , 7 ), (12, 12), (2 , 12), (13, 13), (3 , 12)],
+    6:  [(5 , 5 ), (5 , 9 ), (5 , 14), (5 , 15), (5 , 16)],
+    7:  [(20, 1 ), (20, 3 ), (20, 19), (1 , 17), (8 , 5 )],
+    8:  [(12, 6 ), (10, 6 ), (20, 6 ), (10, 10), (4 , 6 )],
+    9:  [(13, 3 ), (13, 12), (13, 4 ), (17, 3 ), (3 , 9 )],
+    10: [(9 , 12), (10, 12), (11, 12), (5 , 20), (7 , 20)],
+    11: [(18, 5 ), (14, 5 ), (2 , 5 ), (6 , 5 ), (7 , 5 )],
+    12: [(4 , 20), (20, 20), (12, 20), (14, 20), (16, 20)],
+    13: [(4 , 10), (7 , 10), (11, 10), (9 , 10), (10, 10)],
+    14: [],
+    15: [(2 , 19), (6 , 19), (14, 19), (18, 19), (10, 19)],
 }
+# fmt: on
+
 
 def all_possible():
     return product(*(range(1, 21) for _ in range(4)))
+
 
 def was_shot_at(day: int, x: int, y: int) -> bool:
     assert 1 <= day <= 25 and 1 <= x <= 20 and 1 <= y <= 20
@@ -42,10 +46,13 @@ def was_shot_at(day: int, x: int, y: int) -> bool:
     for shot in SHOTS_MADE[day]:
         if shot == (x, y):
             return True
-    
+
     return False
 
-def positions_each_day(x0: int, y0: int, dx: int, dy: int) -> Generator[tuple[int, int, int], None, None]:
+
+def positions_each_day(
+    x0: int, y0: int, dx: int, dy: int
+) -> Generator[tuple[int, int, int], None, None]:
     assert 1 <= x0 <= 20 and 1 <= y0 <= 20 and 1 <= dx <= 20 and 1 <= dy <= 20
     x, y = x0, y0
     for day in range(1, 26):
@@ -58,6 +65,7 @@ def positions_each_day(x0: int, y0: int, dx: int, dy: int) -> Generator[tuple[in
             x -= 20
         if y > 20:
             y -= 20
+
 
 print("Simulating red drone...")
 red_possible = np.zeros((25, 20, 20))
@@ -93,7 +101,7 @@ for x0, y0, dx, dy in all_possible():
             break
     else:
         for day, x, y in positions_each_day(x0, y0, dx, dy):
-            red_possible[day-1, x-1, y-1] += 1
+            red_possible[day - 1, x - 1, y - 1] += 1
 assert all(day_sum >= 1 for day_sum in red_possible.sum(axis=(1, 2)))
 
 print("Simulating blue drone...")
@@ -140,7 +148,7 @@ for x0, y0, dx, dy in all_possible():
             break
     else:
         for day, x, y in positions_each_day(x0, y0, dx, dy):
-            blue_possible[day-1, x-1, y-1] += hits
+            blue_possible[day - 1, x - 1, y - 1] += hits
 assert all(day_sum >= 1 for day_sum in blue_possible.sum(axis=(1, 2)))
 
 print("Simulating orange drone...")
@@ -172,8 +180,8 @@ for x0, y0, dx, dy in all_possible():
             break
     else:
         for day, x, y in positions_each_day(x0, y0, dx, dy):
-            orange_possible[day-1, x-1, y-1] += hits
+            orange_possible[day - 1, x - 1, y - 1] += hits
 assert all(day_sum >= 1 for day_sum in orange_possible.sum(axis=(1, 2)))
 
 print("Displaying results!")
-display_possible(blue_possible, orange_possible, days=range(15,26))
+display_possible(blue_possible, orange_possible, days=range(15, 26))
