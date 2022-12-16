@@ -29,7 +29,7 @@ def display_possible(
         data = np.pad(data, ((1, 0), (1, 0))) * 100
 
         fig, ax = plt.subplots()
-        im = ax.imshow(data, vmin=0, vmax=4, origin="lower", cmap="gist_ncar")
+        im = ax.imshow(data, vmin=0, vmax=10, origin="lower", cmap="gist_ncar")
         ax.set_xticks(range(1, 21))
         ax.set_yticks(range(1, 21))
 
