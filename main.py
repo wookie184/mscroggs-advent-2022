@@ -16,6 +16,11 @@ from display import display_possible
 # Day 8  - 840
 # Day 9  - 532
 # Day 10 - 800
+# Day 11 - 987
+# Day 12 - 143
+# Day 13 - 564
+# Day 14 - 614
+# Day 15 - 243
 
 # fmt: off
 SHOTS_MADE = {
@@ -30,6 +35,7 @@ SHOTS_MADE = {
     13: [(4 , 10), (7 , 10), (11, 10), (9 , 10), (10, 10)],
     14: [],
     15: [(2 , 19), (6 , 19), (14, 19), (18, 19), (10, 19)],
+    16: [(1 , 4 ), (17, 4 ), (16, 4 ), (15, 4 ), (2 , 4 )],
 }
 # fmt: on
 
@@ -101,13 +107,22 @@ for x0, y0, dx, dy in all_possible():
             break
     else:
         for day, x, y in positions_each_day(x0, y0, dx, dy):
+            # Day 10 clue
+            if day == 8:
+                # Relying on this for orange to be correct
+                assert y == 20
+
+            # Day 13 clue
+            if day == 10:
+                # Relying on this for blue and orange to be correct
+                assert y != 4
+
             red_possible[day - 1, x - 1, y - 1] += 1
 assert all(day_sum >= 1 for day_sum in red_possible.sum(axis=(1, 2)))
 
 print("Simulating blue drone...")
 blue_possible = np.zeros((25, 20, 20))
 for x0, y0, dx, dy in all_possible():
-    hits = 1
     # Day 3 clue
     if dx in (3, 6, 9):
         continue
@@ -132,32 +147,33 @@ for x0, y0, dx, dy in all_possible():
         if was_shot_at(day, x, y):
             break
 
-        # Day 10 clue
-        # This isn't necessarily true, I only know it's true for one of blue and orange
-        # so I'll just add an extra couple hits here to reflect that.
-        if day == 8 and y == 20:
-            hits += 2
-
         # Day 13 clue
-        # I know red is not at position on this day, so must be blue and orange
+        # Can rely on this due to assertion in red
         if day == 6 and y != 4:
             break
 
-        # Day 14
+        # Day 14 clue
         if day == 4 and y != 14:
             break
     else:
         for day, x, y in positions_each_day(x0, y0, dx, dy):
-            blue_possible[day - 1, x - 1, y - 1] += hits
+            # Day 10 clue
+            if day == 8:
+                # Relying on this for orange to be correct
+                assert y != 20
+
+            blue_possible[day - 1, x - 1, y - 1] += 1
 assert all(day_sum >= 1 for day_sum in blue_possible.sum(axis=(1, 2)))
 
 print("Simulating orange drone...")
 orange_possible = np.zeros((25, 20, 20))
 for x0, y0, dx, dy in all_possible():
-    hits = 1
-
     # Day 12 clue
     if dx not in (1, 4, 3):
+        continue
+
+    # Day 16 clue
+    if dx not in (2, 3, 4):
         continue
 
     for day, x, y in positions_each_day(x0, y0, dx, dy):
@@ -169,19 +185,17 @@ for x0, y0, dx, dy in all_possible():
             break
 
         # Day 10 clue
-        # This isn't necessarily true, I only know it's true for one of blue and orange
-        # so I'll just add an extra couple hits here to reflect that.
-        if day == 8 and y == 20:
-            hits += 2
+        # Can rely on this due to assertions for red and blue
+        if day == 8 and y != 20:
+            break
 
         # Day 13 clue
-        # I know red is not at position on this day, so must be blue and orange
+        # Can rely on this due to assertion in red
         if day == 6 and y != 4:
             break
     else:
         for day, x, y in positions_each_day(x0, y0, dx, dy):
-            orange_possible[day - 1, x - 1, y - 1] += hits
+            orange_possible[day - 1, x - 1, y - 1] += 1
 assert all(day_sum >= 1 for day_sum in orange_possible.sum(axis=(1, 2)))
 
-print("Displaying results!")
-display_possible(blue_possible, orange_possible, days=range(15, 26))
+display_possible(blue_possible, orange_possible, days=range(16, 26))
